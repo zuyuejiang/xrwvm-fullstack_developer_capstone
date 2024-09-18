@@ -1,7 +1,7 @@
 # Uncomment the required imports before adding the code
 
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 # from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
@@ -138,16 +138,30 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 
+# def add_review(request):
+#     if not request.user.is_anonymous:
+#         data = json.loads(request.body)
+#         try:
+#             response = post_review(data)
+#             return JsonResponse({"status": 200,
+#                                  "response": response})
+#         except Exception:
+#             return JsonResponse({"status": 401,
+#                                  "message": "Error in posting review"})
+#     else:
+#         return JsonResponse({"status": 403, "message": "Unauthorized"})
 
 def add_review(request):
-    if not request.user.is_anonymous:
+    if (request.user.is_anonymous is False):
         data = json.loads(request.body)
         try:
-            response = post_review(data)
-            return JsonResponse({"status": 200,
-                                 "response": response})
+            post_review(data)
+            return JsonResponse({"status": 200})
         except Exception:
             return JsonResponse({"status": 401,
                                  "message": "Error in posting review"})
+        finally:
+            print("add_review request successful!")
     else:
-        return JsonResponse({"status": 403, "message": "Unauthorized"})
+        return JsonResponse({"status": 403,
+                             "message": "Unauthorized"})
